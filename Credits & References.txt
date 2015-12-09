@@ -1,0 +1,7 @@
+## References Used For Programming
+1> [Bing Package] (https://github.com/openlabs/Microsoft-Translator-Python-API) <br />
+2> [Twitter Package] (https://github.com/geduldig/TwitterAPI) <br />
+3> [Google Geo Package] (https://pypi.python.org/pypi/geocoder) <br />
+4> [Scikit-learn Package] (https://github.com/scikit-learn/scikit-learn) <br />
+
+
