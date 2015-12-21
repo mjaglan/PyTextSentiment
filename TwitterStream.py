@@ -40,6 +40,14 @@ def getAppObject():
 
     return globalAppObj
 
+
+def RepresentsNum(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+
 def getFeedsByText(api=None, f1=None, isLive=True, annotation=None, queryText=u'a', textLang=None, isTrain=False, locationArea=None):
     # ts = time.time()
     # st = unicode(datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S'))
@@ -48,7 +56,7 @@ def getFeedsByText(api=None, f1=None, isLive=True, annotation=None, queryText=u'
     isDuplicateList = []
     tweetsRecorded = 0
     reTryCount = 0
-    MAX_TWEET = 5
+    MAX_TWEET = 20
     MAX_TRIES = 10
     while True:
         try:
@@ -117,8 +125,33 @@ def getFeedsByText(api=None, f1=None, isLive=True, annotation=None, queryText=u'
                             listRes.append(emoVector[key])
                         print(listRes, keyRes)
 
+                        listStr1 = str(listRes).replace(",", " ")
+                        listStr2 = listStr1[1:-1]
+                        listStr3 = listStr2.split()
+                        listVector = [float(i) for i in listStr3 if RepresentsNum(i)]
+
+                        emoLabel = annotation
+                        if len(listVector) != 0:
+                            assert (len(listVector) == 8) # emo-vector length should be 8;
+                            if True: # Training Only
+                                emoTypesCount = 0
+                                for i in range(0,8,1):
+                                    if (listVector[i] > 0.0):
+                                        emoTypesCount += 1
+
+                                if (emoTypesCount == 0):
+                                    emoLabel = "neutral"
+                                    print(">> No Emotion")
+                                    continue
+                                elif (emoTypesCount >= 5):
+                                    emoLabel = "mixed"
+                                    print(">> Mixed Emotion")
+                                    continue
+                                else:
+                                    emoLabel = annotation
+
                         if isTrain == True:
-                            f1.write( item[u'id_str'] + "," + unicode(item[u'created_at']) + "," + item[u'lang'] + "," + annotation.lower() + "," + fineEnText.replace("\n", " ").replace("\r", " ") + "," + str(listRes).replace(",", " ") + "," + "\n" )
+                            f1.write( item[u'id_str'] + "," + unicode(item[u'created_at']) + "," + item[u'lang'] + "," + emoLabel.lower() + "," + fineEnText.replace("\n", " ").replace("\r", " ") + "," +  + "," + "\n" )
                             f1.flush()
                             os.fsync(f1.fileno())
                         else:
@@ -240,7 +273,11 @@ def main():
         myAnnotation, extension = os.path.splitext(aFile.lower())
         with open(join(resPath,aFile), 'r') as f1:
             read_data = f1.readlines()
-            for eachWord in read_data[0:300]:
+            wordCount = 0
+            for eachWord in read_data:
+                wordCount += 1
+                if wordCount > 200: # only 200 words
+                    break
                 aWord = str(eachWord).strip('\r\n').lower()
                 if len(aWord) > 2: # avoid mess
                     aWord = "#" + aWord # prepend hashtag for better relevance

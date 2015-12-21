@@ -16,7 +16,7 @@ fileTrainingDataSet=open(globalCSVDataStorePath)
 
 inputList=[]
 tweetVectorList=[]
-noOfCluster=8
+noOfCluster=9   # (8+1 clusters)
 vectorKeyList=['anger', 'anticipation', 'disgust', 'enjoyment', 'fear', 'sad', 'surprise', 'trust']
 annotatedVector=[]
 def readFile(filePointer=fileTrainingDataSet):
@@ -191,6 +191,6 @@ def cvPredict(y, predicted):
         print "\n confusion_matrix:\n\n", metrics.confusion_matrix(y, predicted)
 
 
-#analyseList()
-# findClusterDestribution(17)
+# analyseList()
+# findClusterDestribution(29)
 
