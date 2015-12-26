@@ -67,4 +67,5 @@ def smallTest():
     for i in range(0,10,1):
         print string_translate()
 
-# smallTest()
+
+if __name__ == '__main__': smallTest()

@@ -21,4 +21,4 @@ def getGeoArea(area = "New York City, NY"):
     approxCoordinateString = str(int(longitude - cityLongitudeDelta)) + "," + str(int(latitude - cityLatitudeDelta)) + "," + str(int(longitude + cityLongitudeDelta)) + "," + str(int(latitude + cityLatitudeDelta))
     return approxCoordinateString # "New York City, NY" : '-74,40,-73,41'
 
-# print getGeoArea()
+if __name__ == '__main__': print getGeoArea()
