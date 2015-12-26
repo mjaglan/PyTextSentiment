@@ -12,7 +12,11 @@ from sklearn.cluster import KMeans
 import os
 aBasePath = os.getcwd()
 globalCSVDataStorePath = aBasePath+"/../TextSentiment.V1.b/twitterData/myJsonOutput.csv"
-fileTrainingDataSet=open(globalCSVDataStorePath)
+try:
+    fileTrainingDataSet=open(globalCSVDataStorePath)
+except:
+    fileTrainingDataSet = None
+    pass
 
 inputList=[]
 tweetVectorList=[]
@@ -20,22 +24,25 @@ noOfCluster=9   # (8+1 clusters)
 vectorKeyList=['anger', 'anticipation', 'disgust', 'enjoyment', 'fear', 'sad', 'surprise', 'trust']
 annotatedVector=[]
 def readFile(filePointer=fileTrainingDataSet):
-  count=0
-  for line in filePointer:
-    if count==0:
-        count+=1
-        continue
-    tempList=line.strip("\n").split(",")
-    tempList2=[]
-    tempList2.append(tempList[0])
-    vectorString=tempList[5].strip("[]")
-    vectorList=vectorString.split("  ")
-    tempList2.append(vectorList)
-    inputList.append(vectorList)
-    tweetVectorList.append(tempList2)
-  # print "total number of tweets to classify "+str(len(inputList))
-  filePointer.close()
-  return inputList
+    try:
+      count=0
+      for line in filePointer:
+        if count==0:
+            count+=1
+            continue
+        tempList=line.strip("\n").split(",")
+        tempList2=[]
+        tempList2.append(tempList[0])
+        vectorString=tempList[5].strip("[]")
+        vectorList=vectorString.split("  ")
+        tempList2.append(vectorList)
+        inputList.append(vectorList)
+        tweetVectorList.append(tempList2)
+      # print "total number of tweets to classify "+str(len(inputList))
+      filePointer.close()
+    except:
+       pass
+    return inputList
 
 def analyseList():
   list=readFile()

@@ -62,11 +62,11 @@ def getFeedsByText(api=None, f1=None, isLive=True, annotation=None, queryText=u'
         try:
 
             # TODO: think of better ways to handle this
-            if (iteratorRunCount >= 2): # hack, this limits the number of tweets you want to retrieve
+            if (iteratorRunCount >= 10): # hack, this limits the number of tweets you want to retrieve
                 print( "\n ASSUMPTION: there are no tweets as of now. Let's go back! \n\n")
                 print(u"\n\n\n")
                 return
-            elif (iteratorRunCount >= 1):
+            elif (iteratorRunCount >= 5):
                 if (queryText[0] == '#'):
                     queryText = queryText[1:]
                 else:
@@ -74,7 +74,7 @@ def getFeedsByText(api=None, f1=None, isLive=True, annotation=None, queryText=u'
                     print(u"\n\n\n")
                     return
             else:
-                # try first iteration with original search
+                # try some iteration with original search
                 pass
 
             time.sleep(int(3600/100)+4) # Let's take 40 seconds pause; twitter rate limit is 100 API calls per hour in total per account; source: https://blog.twitter.com/2008/what-does-rate-limit-exceeded-mean-updated
@@ -151,7 +151,7 @@ def getFeedsByText(api=None, f1=None, isLive=True, annotation=None, queryText=u'
                                     emoLabel = annotation
 
                         if isTrain == True:
-                            f1.write( item[u'id_str'] + "," + unicode(item[u'created_at']) + "," + item[u'lang'] + "," + emoLabel.lower() + "," + fineEnText.replace("\n", " ").replace("\r", " ") + "," +  + "," + "\n" )
+                            f1.write( unicode(item[u'id_str']) + "," + unicode(item[u'created_at']) + "," + unicode(item[u'lang']) + "," + unicode(emoLabel).lower() + "," + unicode(fineEnText).replace("\n", " ").replace("\r", " ") + "," + "\n" )
                             f1.flush()
                             os.fsync(f1.fileno())
                         else:
@@ -276,7 +276,7 @@ def main():
             wordCount = 0
             for eachWord in read_data:
                 wordCount += 1
-                if wordCount > 200: # only 200 words
+                if wordCount > 2000: # only 2000 words
                     break
                 aWord = str(eachWord).strip('\r\n').lower()
                 if len(aWord) > 2: # avoid mess
