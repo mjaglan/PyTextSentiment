@@ -77,13 +77,15 @@ class SyntacticTagger:
         #print "======================================================================================================="
         isFound=False
         emoWords={}
-
         wordList=sentence.lower().split(" ")
+
         for word in wordList:
            #print word
            isFound=False
            if len(word)>2:
                for key in self.emotionDict:
+                    if isFound==True:
+                        break
                     for emotion in self.emotionDict[key]:
 
                         # QUICK: Find exact match in BOW!!
@@ -91,21 +93,38 @@ class SyntacticTagger:
                             emoWords[emotion.strip("\n\r")]=key
                             isFound=True
 
-                        # TIME CONSUMING: Find similarity of words!!
-                        elif self.similarity(emotion.strip(),word)==1:
-                            if len(emotion.strip())-len(word) >3 or len(emotion.strip())-len(word) <-3 :
-                                continue
-                            #print "sentence word "+word+" Emotion Word "+emotion
-                            isFound=True
-                            emoWords[emotion.strip("\n")]=key
-                            # print "Emotion family "+key +" Emotion is "+emotion
-
                         else:
                             # Think of better ways to extract emo words from raw words
                             pass
 
                         if isFound==True:
                             break
+
+        if isFound == False:
+            for word in wordList:
+               #print word
+               isFound=False
+               if len(word)>2:
+                   for key in self.emotionDict:
+                        if isFound==True:
+                            break
+                        for emotion in self.emotionDict[key]:
+
+                            # TIME CONSUMING: Find similarity of words!!
+                            if self.similarity(emotion.strip(),word)==1:
+                                if len(emotion.strip())-len(word) >3 or len(emotion.strip())-len(word) <-3 :
+                                    continue
+                                #print "sentence word "+word+" Emotion Word "+emotion
+                                isFound=True
+                                emoWords[emotion.strip("\n")]=key
+                                # print "Emotion family "+key +" Emotion is "+emotion
+
+                            else:
+                                # Think of better ways to extract emo words from raw words
+                                pass
+
+                            if isFound==True:
+                                break
 
         #print "emo word found "+str(emoWords)
         textList=""
