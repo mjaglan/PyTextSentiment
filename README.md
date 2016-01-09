@@ -10,3 +10,5 @@
 ***
 ![Page 5](https://github.com/mjaglan/TextSentiment.V1.a.public/blob/master/Documents/images/5.PNG)
 ***
+![Page 6](https://github.com/mjaglan/TextSentiment.V1.a.public/blob/master/Documents/images/6.png)
+***
