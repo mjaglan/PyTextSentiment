@@ -1,7 +1,7 @@
-#Fall 2015, Social Media Mining, ILS-Z639
+#Emotion Detection And Classification of Tweets
 
-![Page 1](https://github.com/mjaglan/TextSentiment.V1.a.public/blob/master/Documents/images/1.PNG)
-***
+The term paper of this work is present [here] (Documents/term_paper.pdf). Below are the highlights of the work done + the results generated for live tweets on 28 December 2015.
+
 ![Page 2](https://github.com/mjaglan/TextSentiment.V1.a.public/blob/master/Documents/images/2.PNG)
 ***
 ![Page 3](https://github.com/mjaglan/TextSentiment.V1.a.public/blob/master/Documents/images/3.PNG)
