@@ -63,3 +63,8 @@ bingClientId
 bingClientSecret
 inputString
 
+.settings/
+.pydevproject
+.settings*
+*.pyc
+.project
