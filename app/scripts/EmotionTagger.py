@@ -11,7 +11,7 @@ import os
 class SyntacticTagger:
     def __init__ (self):
         self.basePath = os.getcwd()
-        self.path = self.basePath+"/../TextSentiment.V1.b/Resource"
+        self.path = self.basePath+"/assets/Resource"
         self.patternPath = self.path+"/pattern.txt"
         self.siftMapper = self.path+"/SiftMapper.txt"
         self.emotions=['AngerSynonyms','Anger','DisgustSynonyms','Disgust','EnjoymentSynonyms','Enjoyment','FearSynonyms','Fear','SadSynonyms','Sad','Surprise']

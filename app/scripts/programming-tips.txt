@@ -1,0 +1,5 @@
+TIPS:
+1> Upgrade "requests" if needed.
+
+2> Just in case this warning arrives:
+http://stackoverflow.com/questions/29134512/insecureplatformwarning-a-true-sslcontext-object-is-not-available-this-prevent

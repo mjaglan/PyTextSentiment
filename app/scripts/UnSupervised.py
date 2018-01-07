@@ -23,7 +23,7 @@ NOTE: Avoid multiple inheritance at all costs, as it can grow too complex to be 
 class UnSupervisedInfrastructure:
     def __init__(self):
         self.aBasePath = os.getcwd()
-        self.globalCSVDataStorePath = self.aBasePath+"/../TextSentiment.V1.b/twitterData/myJsonOutput.csv"
+        self.globalCSVDataStorePath = self.aBasePath+"/assets/twitterData/myJsonOutput.csv"
         try:
             self.fileTrainingDataSet=open(self.globalCSVDataStorePath)
         except:
@@ -172,7 +172,7 @@ class UnSupervisedInfrastructure:
                         j+=1
                     myDict[lable]=vector
             lableDict=self.clusterlable(myDict)
-            kMeanPath = self.aBasePath + "/../TextSentiment.V1.b/twitterData/KMeans"
+            kMeanPath = self.aBasePath + "/assets/twitterData/KMeans"
             for line in range(len(clusterList)):
                 tag=lableDict[clusterList[line]]
                 if i==1:
