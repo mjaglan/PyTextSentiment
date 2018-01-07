@@ -84,7 +84,9 @@ class DataRetrieval_Twitter:
                     # try some iteration with original search
                     pass
 
-                time.sleep(int(3600/100)+4) # Let's take 40 seconds pause; twitter rate limit is 100 API calls per hour in total per account; source: https://blog.twitter.com/2008/what-does-rate-limit-exceeded-mean-updated
+                # Let's take 60 seconds pause before each API call;
+                # 2017 twitter rate limit is 15 API calls per 15 mins in total per account;
+                time.sleep(60)
 
                 if (textLang is not None):
                     queryText = queryText + ' lang:' + textLang
@@ -132,7 +134,8 @@ class DataRetrieval_Twitter:
 
                             rawEnText = TranslationModule.getEnglish(rawTextClean4)
                             fineEnText = rawEnText.replace(",", " ").replace(";", " ")
-                            print( str(tweetsRecorded) + ":\t" + item[u'lang'] + ",\t\t" + annotation.lower() + "\t\t:" + queryText + "\t\t:" + str(len(fineEnText)) + "\n\t:" + fineEnText)
+                            print( str(tweetsRecorded) + ":\t" + item[u'lang'] + ",\t\t" + annotation.lower() + "\t\t:" + queryText + "\t\t:" + str(len(fineEnText)))
+                            print( fineEnText )
 
                             emoVector = self.getEmoTaggerObject().consolodateResult(fineEnText)
                             listRes = []
@@ -228,18 +231,29 @@ class DataRetrieval_Twitter:
         queryParam['rpp'] = 100
         while True:
             try:
-                time.sleep(int(3600/100)+4) # Let's take 40 seconds pause; twitter rate limit is 100 API calls per hour in total per account; source: https://blog.twitter.com/2008/what-does-rate-limit-exceeded-mean-updated
+                # Let's take 60 seconds pause before next API call;
+                # 2017 twitter rate limit is 15 API calls per 15 mins in total per account;
+                time.sleep(60)
+
                 iterator = api.request('statuses/filter', queryParam).get_iterator()
                 for item in iterator:
                     if 'text' in item:
-                        print('\n\n\n' + item[u'lang'] + ":\t" +  item['text'].encode('utf-8').strip())
                         rawTextClean1 = item[u'text'].encode('utf-8')
                         rawTextClean2 = rawTextClean1.strip()
                         rawTextClean3 = rawTextClean2.replace("#"," ")  # remove hashtags
                         rawTextClean4 = re.sub(r'https?:\/\/.*[\r\n]*', '', rawTextClean3, flags=re.MULTILINE) # remove urls
                         rawEnText = TranslationModule.getEnglish(rawTextClean4)
                         fineEnText = rawEnText.replace(",", " ").replace(";", " ")
-                        print(self.getEmoTaggerObject().consolodateResult(fineEnText))
+                        emoVector = self.getEmoTaggerObject().consolodateResult(fineEnText)
+                        listRes = []
+                        keyRes  = sorted(emoVector)
+                        for key in keyRes:
+                            listRes.append(emoVector[key])
+
+                        ##### CONSOLE #
+                        print '{}: {}'.format(item[u'lang'], rawTextClean2)
+                        print (zip(keyRes, listRes))
+                        print '\n\n\n'
                     elif 'disconnect' in item:
                         event = item['disconnect']
                         if event['code'] in [2,5,6,7]:
@@ -252,9 +266,8 @@ class DataRetrieval_Twitter:
             except TwitterRequestError as e:
                 if e.status_code < 500:
                     # something needs to be fixed before re-connecting
-                    raise
-                    # print "\n\nMJAGLAN EXCEPTION:\n"+str(e)+"\n\n"
-                    # pass
+                    print "\n\nSomething needs to be fixed before re-connecting:\n"+str(e)+"\n\n"
+                    pass
                 else:
                     # temporary interruption, re-try request
                     pass
@@ -331,9 +344,9 @@ def main():
         newFilePath = obj.aBasePath + "/../TextSentiment.V1.b/twitterData/" + unicode(sys.argv[1])
     except:
         newFilePath = obj.globalCSVDataStorePath
+        print("Default File: " + newFilePath)
 
     obj.getFeeds(newFilePath)
-    # obj.liveFeedsByLocation(api=obj.getAppObject(), locationArea="Seoul, South Korea")
     # obj.liveFeedsByLocation(api=obj.getAppObject(), locationArea="New York City, NY")
 
 

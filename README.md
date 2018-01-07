@@ -1,6 +1,6 @@
 ## Emotion Detection And Classification of Tweets
 
-The term paper of this work is present [here] (Documents/term_paper.pdf). Below are the highlights of the work done + the results generated for live tweets on 28 December 2015.
+The term paper of this work is present [here](Documents/term_paper.pdf). Below are the highlights of the work done + the results generated for live tweets on 28 December 2015.
 
 ![Page 2](Documents/images/2.PNG)
 ***
