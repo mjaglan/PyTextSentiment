@@ -30,7 +30,7 @@ import Supervised
 class DataRetrieval_Twitter:
     def __init__(self):
         self.aBasePath = os.getcwd()
-        self.globalCSVDataStorePath = self.aBasePath + "/../TextSentiment.V1.b/twitterData/myJsonOutput.csv"
+        self.globalCSVDataStorePath = self.aBasePath + "/assets/twitterData/myJsonOutput.csv"
 
         # API Object: Never call directly
         """
@@ -300,9 +300,9 @@ class DataRetrieval_Twitter:
         isHashTag = True
 
         if setTrainMode == False:
-            resPath = self.aBasePath + '/../TextSentiment.V1.b/Resource/searchKeys/testFiles'
+            resPath = self.aBasePath + '/assets/Resource/searchKeys/testFiles'
         else:
-            resPath = self.aBasePath + '/../TextSentiment.V1.b/Resource/searchKeys'
+            resPath = self.aBasePath + '/assets/Resource/searchKeys'
 
         from os import listdir
         from os.path import isfile, join
@@ -341,7 +341,7 @@ def main():
     obj = DataRetrieval_Twitter()
 
     try:
-        newFilePath = obj.aBasePath + "/../TextSentiment.V1.b/twitterData/" + unicode(sys.argv[1])
+        newFilePath = obj.aBasePath + "/assets/twitterData/" + unicode(sys.argv[1])
     except:
         newFilePath = obj.globalCSVDataStorePath
         print("Default File: " + newFilePath)

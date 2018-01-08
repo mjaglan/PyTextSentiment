@@ -20,7 +20,7 @@ from microsofttranslator import Translator
 clientObj = None
 def init_translate():
     aBasePath = os.getcwd()
-    sourcePath = aBasePath + "/../TextSentiment.V1.b/BingCredentials"
+    sourcePath = aBasePath + "/assets/BingCredentials"
     fileObj1 = open(sourcePath + '/bingClientId.txt', 'r')
     client_id = fileObj1.read().strip("\n\r")
     fileObj1.close()

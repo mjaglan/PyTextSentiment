@@ -13,8 +13,8 @@ import csv
 
 import os
 aBasePath = os.getcwd()
-globalCSVDataStorePath = aBasePath+"/../TextSentiment.V1.b/twitterData/myJsonOutput.csv"
-resPath = aBasePath + '/../TextSentiment.V1.b/twitterData'
+globalCSVDataStorePath = aBasePath+"/assets/twitterData/myJsonOutput.csv"
+resPath = aBasePath + '/assets/twitterData'
 
 # get a classifier
 from sklearn import cross_validation, metrics
