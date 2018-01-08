@@ -9,6 +9,7 @@ import os
 import numpy
 import re
 import time
+import datetime
 
 # source: https://github.com/geduldig/TwitterAPI
 from TwitterAPI import TwitterAPI, TwitterOAuth, TwitterRequestError, TwitterConnectionError
@@ -222,13 +223,22 @@ class DataRetrieval_Twitter:
 
 
     # Method intended to find most popular tends on twitter in a city
-    def liveFeedsByLocation(self, api=None, locationArea="New York City, NY"):
+    def liveFeedsByLocation(self, api=None, locationArea="New York City, NY", filePath=None):
         if api is None:
             api = self.getAppObject()
 
+        if filePath == self.globalCSVDataStorePath:
+            print("WARNING: Attempt to write on Train Data File!")
+            exit(-1)
+        else:
+            f2 = open(filePath, 'a+')
+
+        langCount = {}
+        langEmo = {}
         queryParam = {}
         queryParam['locations'] = GeoLocationModule.getGeoArea(area=locationArea)
         queryParam['rpp'] = 100
+        recordCount = 0
         while True:
             try:
                 # Let's take 60 seconds pause before next API call;
@@ -238,6 +248,11 @@ class DataRetrieval_Twitter:
                 iterator = api.request('statuses/filter', queryParam).get_iterator()
                 for item in iterator:
                     if 'text' in item:
+                        if item[u'lang'] in langCount.keys():
+                            langCount[item[u'lang']] += 1
+                        else:
+                            langCount[item[u'lang']] = 1
+
                         rawTextClean1 = item[u'text'].encode('utf-8')
                         rawTextClean2 = rawTextClean1.strip()
                         rawTextClean3 = rawTextClean2.replace("#"," ")  # remove hashtags
@@ -254,6 +269,31 @@ class DataRetrieval_Twitter:
                         print '{}: {}'.format(item[u'lang'], rawTextClean2)
                         print (zip(keyRes, listRes))
                         print '\n\n\n'
+
+                        listStr1 = str(listRes).replace(",", " ")
+                        listStr2 = listStr1[1:-1]
+                        listStr3 = listStr2.split()
+                        listVector = [float(i) for i in listStr3 if Utility.RepresentsNum(i)]
+                        if len(listVector) == 0:
+                            listVector = [0.0] * len(langEmo[langEmo.keys()[0]])
+                        if item[u'lang'] in langEmo.keys():
+                                langEmo[item[u'lang']] = [sum(x) for x in zip(langEmo[item[u'lang']], listVector)]
+                        else:
+                            langEmo[item[u'lang']] = listVector
+
+                        assert len(langCount.keys()) == len(langEmo.keys()) ################################## ASSERT #
+                        recordCount += 1
+
+                        # if recordCount > 500:
+                        #     print("record count: " + str(recordCount))
+                        #     recordCount = 0
+                        #     f2.write( u'LOCATION' + "," + u"LANGUAGE" + "," + u"LANGUAGE_COUNT" + "," + u'EMO VECTOR' + "," +  "\n")
+                        #     for aKey in langCount:
+                        #         f2.write( unicode(locationArea) + "," + unicode(aKey) + "," + unicode(langCount[aKey]) + "," + unicode(langEmo[aKey]) + "," +  "\n")
+                        #     f2.write( "\n\n\n")
+                        #     f2.flush()
+                        #     os.fsync(f2.fileno())
+
                     elif 'disconnect' in item:
                         event = item['disconnect']
                         if event['code'] in [2,5,6,7]:
@@ -264,6 +304,14 @@ class DataRetrieval_Twitter:
                             break
 
             except TwitterRequestError as e:
+                print("record count: " + str(recordCount))
+                f2.write( u'LOCATION' + "," + u"LANGUAGE" + "," + u"LANGUAGE_COUNT" + "," + u'EMO VECTOR' + "," +  "\n")
+                for aKey in langCount:
+                    f2.write( unicode(locationArea) + "," + unicode(aKey) + "," + unicode(langCount[aKey]) + "," + unicode(langEmo[aKey]) + "," +  "\n")
+                f2.write( "\n\n\n")
+                f2.flush()
+                os.fsync(f2.fileno())
+
                 if e.status_code < 500:
                     # something needs to be fixed before re-connecting
                     print "\n\nSomething needs to be fixed before re-connecting:\n"+str(e)+"\n\n"
@@ -273,6 +321,14 @@ class DataRetrieval_Twitter:
                     pass
 
             except TwitterConnectionError:
+                # print("record count: " + str(recordCount))
+                f2.write( u'LOCATION' + "," + u"LANGUAGE" + "," + u"LANGUAGE_COUNT" + "," + u'EMO VECTOR' + "," +  "\n")
+                for aKey in langCount:
+                    f2.write( unicode(locationArea) + "," + unicode(aKey) + "," + unicode(langCount[aKey]) + "," + unicode(langEmo[aKey]) + "," +  "\n")
+                f2.write( "\n\n\n")
+                f2.flush()
+                os.fsync(f2.fileno())
+
                 # temporary interruption, re-try request
                 pass
 
@@ -340,15 +396,44 @@ class DataRetrieval_Twitter:
 def main():
     obj = DataRetrieval_Twitter()
 
+    print "ARGS LIST:"
+    inputFilePath = obj.aBasePath + "/assets/input.txt"
+    inputList = [line.rstrip('\n') for line in open(inputFilePath)]
+    for eachInput in inputList:
+        print eachInput
+
     try:
-        newFilePath = obj.aBasePath + "/assets/twitterData/" + unicode(sys.argv[1])
+        newFilePath = obj.aBasePath + "/assets/twitterData/" + unicode(inputList[0])
     except:
         newFilePath = obj.globalCSVDataStorePath
         print("Default File: " + newFilePath)
 
-    obj.getFeeds(newFilePath)
-    # obj.liveFeedsByLocation(api=obj.getAppObject(), locationArea="New York City, NY")
+    try:
+        location = unicode(inputList[1])
+    except:
+        location = "Seoul, South Korea"
+        print("Default Location: " + location)
+
+    try:
+        methodName = unicode(inputList[2]).lower()
+    except:
+        methodName = "location"
+        print("Default Method: " + methodName)
 
 
-if __name__ == '__main__': main()
+    ts = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+    if methodName == "location":
+        # python TwitterStream.py "Seoul.SouthKorea.csv" "Seoul, South Korea" "location"
+        newFilePath = newFilePath[:-4] + "-" + location + newFilePath[-4:]
+        newFilePath = newFilePath[:-4] + "-" + ts       + newFilePath[-4:]
+        print "Parameters: \n %s \n %s \n %s" % ("liveFeedsByLocation", location, newFilePath)
+        obj.liveFeedsByLocation(api=obj.getAppObject(), locationArea=location, filePath=newFilePath)
+    else:
+        # python TwitterStream.py "Train.File.Name.csv" "any thing" "any thing"
+        newFilePath = newFilePath[:-4] + ts + newFilePath[-4:]
+        print "Parameters: \n %s \n %s" % ("getFeeds", newFilePath)
+        obj.getFeeds(newFilePath)
 
+
+if __name__ == '__main__':
+    main()

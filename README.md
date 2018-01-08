@@ -1,27 +1,12 @@
 ## Emotion Detection And Classification of Tweets
 
 ### How to Run
-Below steps are tested on Ubuntu-14.04 node.
+- Go to your terminal.
 
-- Install dependencies:
-
+- Clone this repository and go inside it
 	```
-	# install utilities on up-to-date node
-	apt-get update && apt-get -y dist-upgrade && apt-get -y install -f \
-			&& apt-get -y install python python-pip python-dev build-essential \
-			python-setuptools python-numpy python-scipy libatlas-dev libatlas3gf-base \
-			python-sklearn
-
-	# upgrade python2 requests package
-	pip install --upgrade requests
-
-	# pip packages
-	pip install TwitterAPI \
-                microsofttranslator \
-                nltk
-
-	# Download NLTK Data
-	python -m nltk.downloader all
+	git clone https://github.com/mjaglan/PyTextSentiment.git
+	cd PyTextSentiment
 	```
 
 - Edit following files:
@@ -29,16 +14,18 @@ Below steps are tested on Ubuntu-14.04 node.
 	app/assets/BingCredentials/bingClientId.txt
 	app/assets/BingCredentials/bingClientSecret.txt
 	app/assets/TwitterAPI/credentials.txt
+	app/assets/input.txt
 	```
-
-- Copy ```app/assets/TwitterAPI/credentials.txt``` to ```/usr/local/lib/python2.7/dist-packages/TwitterAPI/credentials.txt```
-
-- Go inside ```app/``` directory.
 
 - Run the following script
 	```
-	. ./run-services.sh
+	. ./restart-all.sh
 	```
+
+
+### Web UI
+
+- This application inside docker container page can be browsed at [http://CONTAINER-IP:9091/](http://0.0.0.0:9091/)
 
 
 ### Project Structure

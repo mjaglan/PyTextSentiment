@@ -1,0 +1,10 @@
+# LINK: https://docs.docker.com/engine/reference/builder/
+# The build is run by the Docker daemon, not by the CLI. The first thing a build process does is send the entire context (recursively) to the daemon. In most cases, it’s best to start with an empty directory as context and keep your Dockerfile in that directory. Add only the files needed for building the Dockerfile. Example: Do not use your root directory, /, as the PATH as it causes the build to transfer the entire contents of your hard drive to the Docker daemon. To use a file in the build context, the Dockerfile refers to the file specified in an instruction, for example, a COPY instruction. To increase the build’s performance, exclude files and directories by adding a .dockerignore file to the context directory.
+
+# LINK: https://docs.docker.com/engine/reference/builder/#dockerignore-file
+*.md
+*.log
+.git/
+.project
+*.md.html
+
